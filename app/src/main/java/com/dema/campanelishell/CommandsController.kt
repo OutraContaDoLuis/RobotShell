@@ -1,13 +1,19 @@
 package com.dema.campanelishell
 
-class CommandsController() {
+import android.content.Context
+
+class CommandsController {
 
     companion object {
 
-        fun getCommand(cmd: String?) {
+        fun getCommand(context: Context, cmd: String?) {
             when (cmd) {
                 "ls" -> {
-                    //CommandsExecution.listFilesInTheCurrentDirectory()
+                    val currentPath = (context as? HomeActivity)?.returnCurrentFilePath()
+                    CommandsExecution.listFilesInTheCurrentDirectory(context, currentPath)
+                }
+                else -> {
+                    (context as? HomeActivity)?.setTextCmdAndEditTextCmd("Cmd Not Founded")
                 }
             }
         }

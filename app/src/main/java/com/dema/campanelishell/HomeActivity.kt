@@ -92,13 +92,16 @@ class HomeActivity : AppCompatActivity() {
 
     private fun getTheCommandInCmd() {
         val allTheEditText = txtEditCmd.text.toString()
-        val command = allTheEditText.subSequence("$currentPath> ".length, allTheEditText.length)
+        val command =
+            allTheEditText.subSequence("$currentPath> ".length, allTheEditText.length).toString()
         //Toast.makeText(this, command, Toast.LENGTH_LONG).show()
         Log.v("Command text", command.toString())
 
-        val newText = "Command Not Founded"
+//        val newText = "Command Not Founded"
+//
+//        setTextCmdAndEditTextCmd(newText)
 
-        setTextCmdAndEditTextCmd(newText)
+        CommandsController.getCommand(this, command)
     }
 
     fun setTextCmdAndEditTextCmd(newText: String) {
@@ -121,7 +124,7 @@ class HomeActivity : AppCompatActivity() {
         txtEditCmd.setText(newTextEditTextCmd)
     }
 
-    fun returnCurrentFilePath() {
-
+    fun returnCurrentFilePath(): String {
+        return currentPath
     }
 }
