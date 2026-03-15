@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.dema.campanelishell"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.dema.campanelishell"
