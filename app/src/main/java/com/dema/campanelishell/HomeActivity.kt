@@ -124,6 +124,10 @@ class HomeActivity : AppCompatActivity() {
         txtEditCmd.setText(newTextEditTextCmd)
     }
 
+    fun setNewCurrentFilePath(newPath: String) {
+        currentPath = newPath
+    }
+
     fun returnCurrentFilePath(): String {
         return currentPath
     }
