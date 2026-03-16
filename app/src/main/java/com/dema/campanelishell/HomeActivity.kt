@@ -1,5 +1,6 @@
 package com.dema.campanelishell
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -16,6 +17,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import java.io.File
 
 class HomeActivity : AppCompatActivity() {
 
@@ -94,14 +96,8 @@ class HomeActivity : AppCompatActivity() {
         val allTheEditText = txtEditCmd.text.toString()
         val command =
             allTheEditText.subSequence("$currentPath> ".length, allTheEditText.length).toString()
-        //Toast.makeText(this, command, Toast.LENGTH_LONG).show()
-        Log.v("Command text", command.toString())
 
-//        val newText = "Command Not Founded"
-//
-//        setTextCmdAndEditTextCmd(newText)
-
-        CommandsController.getCommand(this, command)
+        getCommand(command)
     }
 
     fun setTextCmdAndEditTextCmd(newText: String) {
@@ -124,15 +120,91 @@ class HomeActivity : AppCompatActivity() {
         txtEditCmd.setText(newTextEditTextCmd)
     }
 
-    fun setNewCurrentFilePath(newPath: String) {
-        currentPath = newPath
+    private fun getCommand(cmd: String?) {
+        if (cmd.toString().startsWith("ls")) {
+            listFilesInTheCurrentDirectory()
+        } else if (cmd.toString().startsWith("cd")) {
+            val directory = cmd?.trim()?.subSequence(2, cmd.length)
+            Log.v("CD Directory", directory.toString())
+
+            val setNewPath = buildString {
+                append(currentPath)
+                append("/")
+                append(directory?.trim())
+            }
+
+            val file = File(setNewPath)
+
+            Log.v("CD Directory", file.path)
+
+//            if (!file.exists()) {
+//                commandNotFounded(context)
+//                return
+//            }
+//
+//            if (!file.isDirectory) {
+//                commandNotFounded(context)
+//                return
+//            }
+//
+            changeDirectory(true, file.path)
+
+        } else if (cmd.toString().trim() == "clear") {
+            resetTerminal()
+        } else {
+//            commandNotFounded(context)
+        }
     }
 
-    fun returnCurrentFilePath(): String {
-        return currentPath
+    private fun listFilesInTheCurrentDirectory() {
+        val files = FilesController.returnFilesInTheSpecifyFile(currentPath)
+
+        val listOfFilesSb = buildString {
+            files.forEach { it ->
+                appendLine(it.name)
+            }
+        }
+
+        val newTextCmdSb = buildString {
+            appendLine(currentTextCmd)
+            appendLine(txtEditCmd.text.toString())
+            appendLine()
+            appendLine(listOfFilesSb)
+        }
+
+        currentTextCmd = newTextCmdSb
+
+        txtCmd.text = newTextCmdSb
+
+        val newTextEditTextCmd = buildString {
+            append(currentPath)
+            append("> ")
+        }
+
+        txtEditCmd.setText(newTextEditTextCmd)
     }
 
-    fun resetTerminal() {
+    private fun changeDirectory(enterDirectory: Boolean, directoryName: String?) {
+        currentPath = directoryName.toString()
+
+        val newTextCmdSb = buildString {
+            appendLine(currentTextCmd)
+            appendLine(txtEditCmd.text.toString())
+        }
+
+        currentTextCmd = newTextCmdSb
+
+        txtCmd.text = newTextCmdSb
+
+        val newTextEditTextCmd = buildString {
+            append(currentPath)
+            append("> ")
+        }
+
+        txtEditCmd.setText(newTextEditTextCmd)
+    }
+
+    private fun resetTerminal() {
         val newTextCmdSb = buildString {
             appendLine()
         }
