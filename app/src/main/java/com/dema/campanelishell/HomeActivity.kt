@@ -131,4 +131,21 @@ class HomeActivity : AppCompatActivity() {
     fun returnCurrentFilePath(): String {
         return currentPath
     }
+
+    fun resetTerminal() {
+        val newTextCmdSb = buildString {
+            appendLine()
+        }
+
+        currentTextCmd = newTextCmdSb.toString()
+
+        txtCmd.text = newTextCmdSb
+
+        val newTextEditTextCmd = buildString {
+            append(currentPath)
+            append("> ")
+        }
+
+        txtEditCmd.setText(newTextEditTextCmd)
+    }
 }

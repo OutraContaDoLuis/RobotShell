@@ -43,6 +43,8 @@ class CommandsController {
 
                 changeDirectory(context, true, file.path)
 
+            } else if (cmd.toString().trim() == "clear") {
+                clearTerminal(context)
             } else {
                 commandNotFounded(context)
             }
@@ -63,6 +65,10 @@ class CommandsController {
         private fun changeDirectory(context: Context?, enterDirectory: Boolean, directoryName: String?) {
             (context as? HomeActivity)?.setNewCurrentFilePath(directoryName.toString())
             (context as? HomeActivity)?.setTextCmdAndEditTextCmd("")
+        }
+
+        private fun clearTerminal(context: Context?) {
+            (context as? HomeActivity)?.resetTerminal()
         }
 
         private fun commandNotFounded(context: Context?) {
