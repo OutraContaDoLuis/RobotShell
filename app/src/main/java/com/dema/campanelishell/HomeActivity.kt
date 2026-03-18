@@ -17,6 +17,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 class HomeActivity : AppCompatActivity() {
@@ -125,34 +128,92 @@ class HomeActivity : AppCompatActivity() {
             listFilesInTheCurrentDirectory()
         } else if (cmd.toString().startsWith("cd")) {
             val directory = cmd?.trim()?.subSequence(2, cmd.length)
+
             Log.v("CD Directory", directory.toString())
 
-            val setNewPath = buildString {
-                append(currentPath)
-                append("/")
-                append(directory?.trim())
+            Log.v("CD Directory", directory.toString().contains("..").toString())
+
+            val numberOfDotnet = directory.toString().trim().count { it ->
+                it == '.'
             }
 
-            val file = File(setNewPath)
+            Log.v("CD Directory", directory.toString().trim())
+            Log.v("CD Directory", directory.toString().trim().length.toString())
+            Log.v("CD Directory", numberOfDotnet.toString())
+            Log.v("CD Directory",
+                (numberOfDotnet == directory.toString().trim().replace(" ", "").length).toString())
+            Log.v("CD Directory", (numberOfDotnet % 2 == 0).toString())
 
-            Log.v("CD Directory", file.path)
+            if (directory.toString().contains('.')
+                && numberOfDotnet == directory.toString().trim().replace(" ", "").length
+                && numberOfDotnet % 2 == 0) {
+                Log.v("Last dir", "Last")
 
-//            if (!file.exists()) {
-//                commandNotFounded(context)
-//                return
-//            }
-//
-//            if (!file.isDirectory) {
-//                commandNotFounded(context)
-//                return
-//            }
-//
-            changeDirectory(true, file.path)
+//                Log.v("CD Directory", splitCommandToDotnet.toString())
+
+                var indexWhile = numberOfDotnet / 2
+
+                if (indexWhile == 0)
+                    return
+
+                var pathSplit : ArrayList<String?> = arrayListOf()
+                var currentIndexToRemove = 1
+
+                while (indexWhile > 0) {
+                    if (currentIndexToRemove == 1) {
+                        val dirSplit = currentPath.subSequence(1, currentPath.length) .split('/')
+                                as ArrayList<String?>
+
+                        dirSplit.removeAt(dirSplit.size - 1)
+
+                        pathSplit = dirSplit
+                    } else {
+                        pathSplit.removeAt(pathSplit.size - 1)
+                    }
+
+                    Log.v("CD Directory", pathSplit.toString())
+
+                    currentIndexToRemove = currentIndexToRemove + 1
+                    indexWhile = indexWhile - 1
+                }
+
+                var newPath = ""
+
+                pathSplit.forEach { it ->
+                    newPath += "/$it"
+                }
+
+                currentPath = newPath
+
+                changeDirectory(currentPath)
+            } else {
+                val setNewPath = buildString {
+                    append(currentPath)
+                    append("/")
+                    append(directory?.trim())
+                }
+
+                val file = File(setNewPath)
+
+                Log.v("CD Directory", file.path)
+
+            if (!file.exists()) {
+                commandNotFounded(context)
+                return
+            }
+
+            if (!file.isDirectory) {
+                commandNotFounded(context)
+                return
+            }
+
+                changeDirectory(file.path)
+            }
 
         } else if (cmd.toString().trim() == "clear") {
             resetTerminal()
         } else {
-//            commandNotFounded(context)
+            commandNotFounded(context)
         }
     }
 
@@ -184,7 +245,7 @@ class HomeActivity : AppCompatActivity() {
         txtEditCmd.setText(newTextEditTextCmd)
     }
 
-    private fun changeDirectory(enterDirectory: Boolean, directoryName: String?) {
+    private fun changeDirectory(directoryName: String?) {
         currentPath = directoryName.toString()
 
         val newTextCmdSb = buildString {
@@ -205,9 +266,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun resetTerminal() {
-        val newTextCmdSb = buildString {
-            appendLine()
-        }
+        val newTextCmdSb = buildString {}
 
         currentTextCmd = newTextCmdSb.toString()
 
@@ -219,5 +278,9 @@ class HomeActivity : AppCompatActivity() {
         }
 
         txtEditCmd.setText(newTextEditTextCmd)
+    }
+
+    private fun commandNotFounded(cmd: String?) {
+
     }
 }
