@@ -48,6 +48,14 @@ class HomeActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 Log.v("Clicked in done keyboard", "He clicked")
 
+//                try {
+//
+//                } catch (ex: Exception) {
+//
+//                } finally {
+//
+//                }
+
                 getTheCommandInCmd()
 
                 true
@@ -115,12 +123,7 @@ class HomeActivity : AppCompatActivity() {
 
         txtCmd.text = newTextCmdSb
 
-        val newTextEditTextCmd = buildString {
-            append(currentPath)
-            append("> ")
-        }
-
-        txtEditCmd.setText(newTextEditTextCmd)
+        resetTxtEditCmd()
     }
 
     private fun getCommand(cmd: String?) {
@@ -167,9 +170,7 @@ class HomeActivity : AppCompatActivity() {
                     newPath += "/$it"
                 }
 
-                currentPath = newPath
-
-                changeDirectory(currentPath)
+                changeDirectory(newPath)
             } else {
                 val setNewPath = buildString {
                     append(currentPath)
@@ -204,7 +205,7 @@ class HomeActivity : AppCompatActivity() {
 
         val listOfFilesSb = buildString {
             files.forEach { it ->
-                appendLine(it.name)
+                appendLine(it?.name)
             }
         }
 
@@ -219,12 +220,7 @@ class HomeActivity : AppCompatActivity() {
 
         txtCmd.text = newTextCmdSb
 
-        val newTextEditTextCmd = buildString {
-            append(currentPath)
-            append("> ")
-        }
-
-        txtEditCmd.setText(newTextEditTextCmd)
+        resetTxtEditCmd()
     }
 
     private fun changeDirectory(directoryName: String?) {
@@ -233,18 +229,14 @@ class HomeActivity : AppCompatActivity() {
         val newTextCmdSb = buildString {
             appendLine(currentTextCmd)
             appendLine(txtEditCmd.text.toString())
+            appendLine()
         }
 
         currentTextCmd = newTextCmdSb
 
         txtCmd.text = newTextCmdSb
 
-        val newTextEditTextCmd = buildString {
-            append(currentPath)
-            append("> ")
-        }
-
-        txtEditCmd.setText(newTextEditTextCmd)
+        resetTxtEditCmd()
     }
 
     private fun resetTerminal() {
@@ -254,12 +246,7 @@ class HomeActivity : AppCompatActivity() {
 
         txtCmd.text = newTextCmdSb
 
-        val newTextEditTextCmd = buildString {
-            append(currentPath)
-            append("> ")
-        }
-
-        txtEditCmd.setText(newTextEditTextCmd)
+        resetTxtEditCmd()
     }
 
     private fun commandNotFounded(cmd: String?) {
@@ -270,6 +257,19 @@ class HomeActivity : AppCompatActivity() {
             appendLine("'$cmd' It is not recognized as an internal or external command")
         }
 
+        currentTextCmd = newTextCmdSb
+
         txtCmd.text = newTextCmdSb
+
+        resetTxtEditCmd()
+    }
+
+    private fun resetTxtEditCmd() {
+        val newTextEditTextCmd = buildString {
+            append(currentPath)
+            append("> ")
+        }
+
+        txtEditCmd.setText(newTextEditTextCmd)
     }
 }
