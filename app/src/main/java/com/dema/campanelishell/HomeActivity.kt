@@ -129,27 +129,13 @@ class HomeActivity : AppCompatActivity() {
         } else if (cmd.toString().startsWith("cd")) {
             val directory = cmd?.trim()?.subSequence(2, cmd.length)
 
-            Log.v("CD Directory", directory.toString())
-
-            Log.v("CD Directory", directory.toString().contains("..").toString())
-
             val numberOfDotnet = directory.toString().trim().count { it ->
                 it == '.'
             }
 
-            Log.v("CD Directory", directory.toString().trim())
-            Log.v("CD Directory", directory.toString().trim().length.toString())
-            Log.v("CD Directory", numberOfDotnet.toString())
-            Log.v("CD Directory",
-                (numberOfDotnet == directory.toString().trim().replace(" ", "").length).toString())
-            Log.v("CD Directory", (numberOfDotnet % 2 == 0).toString())
-
             if (directory.toString().contains('.')
                 && numberOfDotnet == directory.toString().trim().replace(" ", "").length
                 && numberOfDotnet % 2 == 0) {
-                Log.v("Last dir", "Last")
-
-//                Log.v("CD Directory", splitCommandToDotnet.toString())
 
                 var indexWhile = numberOfDotnet / 2
 
@@ -170,8 +156,6 @@ class HomeActivity : AppCompatActivity() {
                     } else {
                         pathSplit.removeAt(pathSplit.size - 1)
                     }
-
-                    Log.v("CD Directory", pathSplit.toString())
 
                     currentIndexToRemove = currentIndexToRemove + 1
                     indexWhile = indexWhile - 1
@@ -195,17 +179,15 @@ class HomeActivity : AppCompatActivity() {
 
                 val file = File(setNewPath)
 
-                Log.v("CD Directory", file.path)
+                if (!file.exists()) {
+                    commandNotFounded(cmd)
+                    return
+                }
 
-            if (!file.exists()) {
-                commandNotFounded(context)
-                return
-            }
-
-            if (!file.isDirectory) {
-                commandNotFounded(context)
-                return
-            }
+                if (!file.isDirectory) {
+                    commandNotFounded(cmd)
+                    return
+                }
 
                 changeDirectory(file.path)
             }
@@ -213,7 +195,7 @@ class HomeActivity : AppCompatActivity() {
         } else if (cmd.toString().trim() == "clear") {
             resetTerminal()
         } else {
-            commandNotFounded(context)
+            commandNotFounded(cmd)
         }
     }
 
@@ -281,6 +263,13 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun commandNotFounded(cmd: String?) {
+        val newTextCmdSb = buildString {
+            appendLine(currentTextCmd)
+            appendLine(txtEditCmd.text.toString())
+            appendLine()
+            appendLine("'$cmd' It is not recognized as an internal or external command")
+        }
 
+        txtCmd.text = newTextCmdSb
     }
 }
