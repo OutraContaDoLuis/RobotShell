@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 class HomeActivity : AppCompatActivity() {
@@ -201,26 +202,30 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun listFilesInTheCurrentDirectory() {
-        val files = FilesController.returnFilesInTheSpecifyFile(currentPath)
+        CoroutineScope(Dispatchers.IO).launch {
+            val files = FilesController.returnFilesInTheSpecifyFile(currentPath)
 
-        val listOfFilesSb = buildString {
-            files.forEach { it ->
-                appendLine("${it?.name}")
+            val listOfFilesSb = buildString {
+                files.forEach { it ->
+                    appendLine("${it?.name}")
+                }
+            }
+
+            val newTextCmdSb = buildString {
+                appendLine(currentTextCmd)
+                appendLine(txtEditCmd.text.toString())
+                appendLine()
+                appendLine(listOfFilesSb)
+            }
+
+            currentTextCmd = newTextCmdSb
+
+            withContext(Dispatchers.Main) {
+                txtCmd.text = newTextCmdSb
+
+                resetTxtEditCmd()
             }
         }
-
-        val newTextCmdSb = buildString {
-            appendLine(currentTextCmd)
-            appendLine(txtEditCmd.text.toString())
-            appendLine()
-            appendLine(listOfFilesSb)
-        }
-
-        currentTextCmd = newTextCmdSb
-
-        txtCmd.text = newTextCmdSb
-
-        resetTxtEditCmd()
     }
 
     private fun changeDirectory(directoryName: String?) {

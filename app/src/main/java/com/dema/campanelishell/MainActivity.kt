@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        val intent = Intent(this@MainActivity, HomeActivity::class.java)
+        val intent = Intent(this@MainActivity, CheckForPermissionsActivity::class.java)
         startActivity(intent)
         finish()
     }

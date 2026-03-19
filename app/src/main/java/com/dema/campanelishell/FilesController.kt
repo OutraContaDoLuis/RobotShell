@@ -1,6 +1,7 @@
 package com.dema.campanelishell
 
 import android.os.Environment
+import android.util.Log
 import java.io.File
 
 class FilesController {
@@ -10,11 +11,14 @@ class FilesController {
             return Environment.getExternalStorageDirectory().path
         }
 
-        fun returnFilesInTheSpecifyFile(path: String?): Array<File?> {
+        suspend fun returnFilesInTheSpecifyFile(path: String?): Array<File?> {
             if (path == null)
                 return arrayOf()
 
             val files = File(path).listFiles()
+
+            Log.v("Reading archives", File(path).list().toString())
+            Log.v("Reading archives", File(path).listFiles().toString())
 
             if (files == null)
                 return arrayOf()
