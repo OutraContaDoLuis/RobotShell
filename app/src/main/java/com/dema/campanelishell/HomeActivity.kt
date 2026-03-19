@@ -205,7 +205,7 @@ class HomeActivity : AppCompatActivity() {
 
         val listOfFilesSb = buildString {
             files.forEach { it ->
-                appendLine(it?.name)
+                appendLine("${it?.name}")
             }
         }
 

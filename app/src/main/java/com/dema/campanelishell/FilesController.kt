@@ -16,6 +16,9 @@ class FilesController {
 
             val files = File(path).listFiles()
 
+            if (files == null)
+                return arrayOf()
+
             return files
         }
     }
