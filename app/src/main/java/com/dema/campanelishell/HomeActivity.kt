@@ -271,5 +271,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
         txtEditCmd.setText(newTextEditTextCmd)
+        txtEditCmd.setSelection(newTextEditTextCmd.length)
     }
 }
